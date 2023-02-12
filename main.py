@@ -154,18 +154,25 @@ class KParser(HTMLParser):
 
 
 def print_imgs(url):
-    res = requests.get(url);
+  debug = {'verbose': sys.stderr}
+  user_agent = {'User-agent': 'Mozilla/5.0'}
+
+  print('Request on url: ' + url)
+  res = requests.get(url, headers=user_agent)
+
+  if (res.status_code != 200):
     print(res.status_code)
+    print(res)
 
-    parser = KParser()
+  parser = KParser()
+  parser.feed(res.text)
+
+  while parser.next_id != '':
+    #print('Next page id is ', parser.next_id)
+    res = requests.get(url + '&pid=' + parser.next_id);
+    #print(res.status_code)
+    parser.next_id = ''
     parser.feed(res.text)
-
-    while parser.next_id != '':
-        #print('Next page id is ', parser.next_id)
-        res = requests.get(url + '&pid=' + parser.next_id);
-        #print(res.status_code)
-        parser.next_id = ''
-        parser.feed(res.text)
 
 
 if len(sys.argv) < 2:
