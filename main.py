@@ -155,6 +155,9 @@ class KParser(HTMLParser):
 
 def print_imgs(url):
   debug = {'verbose': sys.stderr}
+
+  #headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36'}
+
   user_agent = {'User-agent': 'Mozilla/5.0'}
 
   print('Request on url: ' + url)
@@ -176,22 +179,22 @@ def print_imgs(url):
 
 
 if len(sys.argv) < 2:
-    print('Error: Tag not provided')
-    sys.exit(1)
+  print('Error: Tag not provided')
+  sys.exit(1)
 
 tag = sys.argv[1]
 #tag = 'nonude'
 
 if os.path.exists(WORKSPACE) is False:
-    os.mkdir(WORKSPACE)
+  os.mkdir(WORKSPACE)
 
 FOLDER = WORKSPACE + '/' + tag
 
 if os.path.exists(FOLDER) is False:
-    os.mkdir(FOLDER)
-    if os.path.exists(FOLDER) is False:
-        print('Error: Cannot create target folder.')
-        sys.exit(1)
+  os.mkdir(FOLDER)
+  if os.path.exists(FOLDER) is False:
+    print('Error: Cannot create target folder.')
+    sys.exit(1)
 
 if __name__ == "__main__":
-    print_imgs(BASE_URL + tag)
+  print_imgs(BASE_URL + tag)
