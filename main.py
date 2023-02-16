@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+
 import sys
 import os
 import re
@@ -12,6 +13,11 @@ LOGLEVEL = 1
 
 BASE_URL = "https://rule34.xxx/index.php?page=post&s=list&tags="
 BASE_IMG_URL = "https://rule34.xxx/index.php?page=post&s=view&id="
+
+#headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36'}
+
+user_agent = {'User-agent': 'Mozilla/5.0'}
+
 
 def log(msg):
     print(msg)
@@ -86,8 +92,8 @@ class KParser(HTMLParser):
                 if s != '':
                     id = s.split('?')[1]
                     url = BASE_IMG_URL + str(id)
-                    r = requests.get(url);
-                    #print("Image id: ",id, 'Status: ', r.status_code)
+                    r = requests.get(url, headers=user_agent);
+                    print("Image id: ",id, 'Status: ', r.status_code)
 
                     iparser = KImgParser()
                     iparser.feed(r.text)
@@ -147,7 +153,7 @@ class KParser(HTMLParser):
     def save_image(self, url, f):
         try:
             f = open(FOLDER + '/' + f,'wb')
-            f.write(requests.get(url).content)
+            f.write(requests.get(url, headers=user_agent).content)
             f.close()
         except Exception as e:
             print('Error: Unable load image. ', str(e))
@@ -155,10 +161,6 @@ class KParser(HTMLParser):
 
 def print_imgs(url):
   debug = {'verbose': sys.stderr}
-
-  #headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36'}
-
-  user_agent = {'User-agent': 'Mozilla/5.0'}
 
   print('Request on url: ' + url)
   res = requests.get(url, headers=user_agent)
@@ -172,7 +174,7 @@ def print_imgs(url):
 
   while parser.next_id != '':
     #print('Next page id is ', parser.next_id)
-    res = requests.get(url + '&pid=' + parser.next_id);
+    res = requests.get(url + '&pid=' + parser.next_id, headers=user_agent);
     #print(res.status_code)
     parser.next_id = ''
     parser.feed(res.text)
